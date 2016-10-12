@@ -9,8 +9,8 @@ $passwordinput = Read-host "Password for Deep Security Manager" -AsSecureString
 $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordinput))
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
-$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "ManagerService" -ErrorAction Stop
-$Global:DSM = New-Object ManagerService.ManagerService
+$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
+$Global:DSM = New-Object DSSOAP.ManagerService
 $Global:SID
 try {
     if (!$tenant) {
@@ -32,7 +32,7 @@ $ht = $DSM.hostRetrieveAll($SID);
 foreach ($ht in $hosts)
     {
 
-        $hostdetail = $DSM.hostDetailRetrieveByName($ht.name, [ManagerService.EnumHostDetailLevel]::HIGH, $SID);
+        $hostdetail = $DSM.hostDetailRetrieveByName($ht.name, [DSSOAP.EnumHostDetailLevel]::HIGH, $SID);
 
         if ($hostdetail.overallDpiStatus -like '*OFF*' -Or $hostdetail.overallDpiStatus -like 'Not Activated')
             {

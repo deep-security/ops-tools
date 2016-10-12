@@ -4,7 +4,7 @@
 PowerShell Script to setup objects for remote control of Deep Security Manager via SOAP API.
  
 .DESCRIPTION
-The ds-api script configures a Manager object for interfacing with the Deep Security Manager SOAP API. It will leave a ManagerService.ManagerService() Object $DSM and the ManagerSerivce Namespace will be accessible as [ManagerService].
+The ds-api script configures a Manager object for interfacing with the Deep Security Manager SOAP API. It will leave a DSSOAP.ManagerService() Object $DSM and the ManagerSerivce Namespace will be accessible as [DSSOAP].
 The Username and Password supplied will be used to authenticate to the Deep Security manager and store a token in $SID.
 Log out of the session when finished with $DSM.EndSession($SID).
 See the WebService SDK for more information. This script requires the Web Services API to be enabled on Deep Security Manager.
@@ -41,8 +41,8 @@ $passwordinput = Read-host "Password for Deep Security Manager" -AsSecureString
 $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordinput))
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
-$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "ManagerService" -ErrorAction Stop
-$Global:DSM = New-Object ManagerService.ManagerService
+$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
+$Global:DSM = New-Object DSSOAP.ManagerService
 $Global:SID
 try {
     if (!$tenant) {

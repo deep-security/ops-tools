@@ -19,8 +19,8 @@ $passwordinput = Read-host "Password for Deep Security Manager" -AsSecureString
 $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordinput))
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
-$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "ManagerService" -ErrorAction Stop
-$Global:DSM = New-Object ManagerService.ManagerService
+$Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
+$Global:DSM = New-Object DSSOAP.ManagerService
 $Global:SID
 try {
     if (!$tenant) {
@@ -36,7 +36,7 @@ catch {
 }
 
 
-$hdt = $DSM.hostDetailRetrieveByName($hostname, [ManagerService.EnumHostDetailLevel]::HIGH, $SID)
+$hdt = $DSM.hostDetailRetrieveByName($hostname, [DSSOAP.EnumHostDetailLevel]::HIGH, $SID)
 echo "-------------------------------------------------------------------------------------"
 echo "AgentVersion: " + $hdt.overallVersion
 echo "Classic Pattern Version: " + $hdt.antiMalwareClassicPatternVersion
