@@ -2,7 +2,7 @@
 A set of handy tools to make it easier to run to Deep Security
 
 ## manager tools
--bash
+-bash  
 config-dsRelay.sh: query the status of, enable, or disable relay functionality on an agent  
 config-rehomeAwsDsManager.sh: used by our cloud formation projects to ensure the correct cloud connector sync'd object is activated  
 create-iamCloudAccount.sh: create an iam user and associated keys, then use those keys to create the DS cloud connector  
