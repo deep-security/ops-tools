@@ -1,0 +1,62 @@
+"InstanceName" : {
+  "Type" : "AWS::EC2::Instance",
+  "Metadata" : {
+    "AWS::CloudFormation::Init" : {
+      configSets : {
+        "default" : [
+          "appConfig",
+          "managementConfig"
+        ],
+        "deepSecurityAgentActivation" : [
+          "dsaActivation"
+        ]
+      },
+      "appConfig" : {
+        ...
+      },
+      "managementConfig": {
+        ...
+      }
+      "dsaActivation" : {
+        "commands" : {
+          "1-download-agent" : {
+            "command" : "curl -k https://PUTCUSTOMERDSMFQDN:PORTHERE/software/agent/PLATFORM/ARCH/ -o /tmp/agent.rpm"
+          },
+          "2-install-agent" : {
+            "command" : "rpm -ivh /tmp/agent.rpm"
+          },
+          "3-reset-agent" : {
+            "command" : "/opt/ds_agent/dsa_control -r",
+          },
+          "4-activate-agent" : {
+            "command" : "/opt/ds_agent/dsa_control -a dsm://PUTCUSTOMERDSMFQDN:PORTHERE/"
+          }
+        }
+      }
+    }
+  },
+  "UserData" : {
+    "Fn::Base64" : {
+      "Fn::Join" : [
+        "",
+          [
+            "#!/bin/bash -xe ",
+            "# cloud-init ",
+            "/opt/aws/bin/cfn-init -v ",
+            " --stack ",
+            {
+              "Ref" : "AWS::StackName"
+            },
+            " --resource INSTANCENAME",
+            " --region ",
+            {
+              "Ref" : "AWS::Region"
+            },
+            " -c default,deepSecurityAgentActivation",
+            " ",
+            "/opt/aws/bin/cfn-signal -e $?" 
+          ]
+        ]
+      }
+    }
+  }

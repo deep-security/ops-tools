@@ -1,0 +1,19 @@
+"InstanceName" : {
+  "Type" : "AWS::EC2::Instance",
+  "Metadata" : {....},
+  "UserData" : {
+    "Fn::Base64" : {
+      "Fn::Join" : [
+        "",
+          [
+            "<powershell>\n",
+              "[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}",
+              "New-Object System.Net.WebClient).DownloadFile(\"https://dsm://PUTCUSTOMERDSMFQDN:PORTHERE/software/agent/Windows/x86_64/\", \"$env:temp\\agent.msi\")"
+              "$Env:ProgramFiles\"\\Trend Micro\\Deep Security Agent\\dsa_control\" -r \n",
+              "$Env:ProgramFiles\"\\Trend Micro\\Deep Security Agent\\dsa_control\" -a dsm://PUTCUSTOMERDSMFQDN:PORTHERE/ \n",
+            "</powershell>"
+          ]
+        ]
+      }
+    }
+  }

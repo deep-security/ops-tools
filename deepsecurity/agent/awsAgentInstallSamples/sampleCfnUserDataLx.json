@@ -1,0 +1,18 @@
+"InstanceName" : {
+  "Type" : "AWS::EC2::Instance",
+  "Metadata" : {....},
+  "UserData" : {
+    "Fn::Base64" : {
+      "Fn::Join" : [
+        "",
+          [
+            "#!/bin/bash -xe"
+            "curl -k https://PUTCUSTOMERDSMFQDN:PORTHERE/software/agent/PLATFORM/ARCH/ -o /tmp/agent.rpm"
+            "rpm -ivh /tmp/agent.rpm"
+            "/opt/ds_agent/dsa_control -r"
+            "/opt/ds_agent/dsa_control -a dsm://PUTCUSTOMERDSMFQDN:PORTHERE/"
+          ]
+        ]
+      }
+    }
+  }

@@ -1,0 +1,57 @@
+"InstanceName" : {
+  "Type" : "AWS::EC2::Instance",
+  "Metadata" : {
+    "AWS::CloudFormation::Init" : {
+      configSets : {
+        "default" : [
+          "appConfig",
+          "managementConfig"
+        ],
+        "deepSecurityAgentActivation" : [
+          "dsaActivation"
+        ]
+      },
+      "appConfig" : {
+        ...
+      },
+      "managementConfig": {
+        ...
+      }
+      "dsaActivation" : {
+        "commands" : {
+          "1-reset-agent" : {
+            "command" : "powershell.exe -Command $Env:ProgramFiles\"\\Trend Micro\\Deep Security Agent\\dsa_control\" -r",
+          },
+          "2-activate-agent" : {
+            "command" : "powershell.exe -Command $Env:ProgramFiles\"\\Trend Micro\\Deep Security Agent\\dsa_control\" -a dsm://PUTCUSTOMERDSMFQDN:PORTHERE/"
+          }
+        }
+      }
+    }
+  },
+  "UserData" : {
+    "Fn::Base64" : {
+      "Fn::Join" : [
+        "",
+          [
+            "<script>\n",
+              "cfn-init.exe -v ",
+              " --stack ",
+              {
+                "Ref" : "AWS::StackName"
+              },
+              " --resource InstanceName",
+              " --region ",
+              {
+                "Ref" : "AWS::Region"
+              },
+              " -c default,deepSecurityAgentActivation",
+              "\n",
+              "cfn-signal.exe -e %ERRORLEVEL%",
+              "\n",
+            "</script>"
+          ]
+        ]
+      }
+    }
+  }
