@@ -72,39 +72,39 @@ then
   esac
 else
   #older than systemd
-  #rhel and CentOS
-  if [ -f /etc/redhat-release ]
+  #Oracle Linux
+  if [ -f /etc/oracle-release ]
     then
-      distro="rhel"
+      distro="ol"
       VERSION_ID=$(lsb_release -sr)
       majorversion=${VERSION_ID:0:1}
       case $majorversion in
-	5)
-	  echo "RedHat 5 Detected"
-	  agentidstring="RedHat_EL5"
-	;;
-	6)
-	  echo "RedHat 6 Detected"
-	  agentidstring="RedHat_EL6"
-	;;
-      esac
-    #oracle
-    else 
-      if [ -f /etc/oracle-release ]
-	then
-          distro="ol"
-          VERSION_ID=$(lsb_release -sr)
-          majorversion=${VERSION_ID:0:1}
-          case $majorversion in
-	    5)
-	      echo "Oracle Linux 5 Detected"
-	      agentidstring="Oracle_OL5"
-	    ;;
-	    6)
-	      echo "Oracle Linux 6 Detected"
+        5)
+          echo "Oracle Linux 5 Detected"
+          agentidstring="Oracle_OL5"
+        ;;
+        6)
+          echo "Oracle Linux 6 Detected"
 	      agentidstring="Oracle_OL6"
 	    ;;
-          esac
+      esac
+    else
+    #rhel and CentOS
+    if [ -f /etc/redhat-release ]
+      then
+        distro="rhel"
+        VERSION_ID=$(lsb_release -sr)
+        majorversion=${VERSION_ID:0:1}
+        case $majorversion in
+	      5)
+	        echo "RedHat 5 Detected"
+	        agentidstring="RedHat_EL5"
+	      ;;
+	      6)
+	        echo "RedHat 6 Detected"
+	        agentidstring="RedHat_EL6"
+	      ;;
+        esac
       else
         #SUSE 10
         if [ -f /etc/SuSE-release ]
@@ -114,11 +114,11 @@ else
             majorversion=${VERSION_ID:0:2}
             echo "SuSE 10 Decteted"
 	    agentidstring="SuSE_10"
-	  else
-	    echo "Failed to determine OS"
-	    exit 1
-	  fi	
-      fi      
+	      else
+	        echo "Failed to determine OS"
+	        exit 1
+	    fi
+    fi
   fi
 fi
 
