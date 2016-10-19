@@ -75,7 +75,7 @@ if ($xfor.ID -eq $null)
         echo "Rule did not exist; creating new"
         $xfor = New-Object DSSOAP.DPIRuleTransport
         $xfor.name = "Block-X-Forward-List"
-        $xfor.applicationTypeID = 315
+        $xfor.applicationTypeID = $DSM.applicationTypeRetrieveByName("Web Server Common", $SID).ID
         $xfor.eventOnPacketDrop = $true
         $xfor.eventOnPacketModify = $true
         $xfor.templateType = [DSSOAP.EnumDPIRuleTemplateType]::CUSTOM_XML
