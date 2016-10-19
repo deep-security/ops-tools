@@ -1,3 +1,4 @@
+#!/bin/bash
 ##one line DSA Linux install script
 
 managerfqdn="$1"
