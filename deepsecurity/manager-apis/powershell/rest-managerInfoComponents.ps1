@@ -31,9 +31,7 @@ try {
             userName=$user
             }
     }
-    $data
-    $requestbody = $data | ConvertTo-Json    
-    $requestbody
+    $requestbody = $data | ConvertTo-Json
     $Global:SID=Invoke-RestMethod -Headers $headers -Method POST -Uri $authUri -Body $requestbody
 }
 catch {
@@ -43,7 +41,6 @@ catch {
 
 
 $requestUri = $managerUri + "managerInfo/components?sID=$SID"
-$requestUri
 $response=Invoke-RestMethod -Headers $headers -Method GET -Uri $requestUri
 
 $response
