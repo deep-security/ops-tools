@@ -1,38 +1,73 @@
 # ops-tools
-A set of handy tools to make it easier to run to Deep Security
 
-## manager tools
--bash  
-config-dsRelay.sh: query the status of, enable, or disable relay functionality on an agent  
-config-rehomeAwsDsManager.sh: used by our cloud formation projects to ensure the correct cloud connector sync'd object is activated  
-create-iamCloudAccount.sh: create an iam user and associated keys, then use those keys to create the DS cloud connector  
-rest-cloudAccountsCreateAws.sh: create cloud accounts for all regions  
-rest-cloudAccountsCreateAws.sh: create cloud account for GovCloud  
-rest-tenantsCreate.sh: create new tenant  
+A set of handy tools to make it easier to run to Deep Security.
 
--powershell  
-config-dsRelay.ps1: query the status of, enable, or disable relay functionality on an agent  
-config-ipsXforwardedForRule.ps1: create or update an ips rule which a list of ips to be blocked based on header added by an AWS ELB  
-config-plicy-agentcomm.ps1: configure manager agent communication direction on a policy  
-get-allHostsSummary.ps1: get summary of all host objects in deep security manager similar to dashboard status widget  
-get-amComponentVersions.ps1: get detailed agent and am engine versions for a host object  
-get-computerCreatedEvents.ps1: get all computer created system events for a given time frame  
-get-firewallrules.ps1: get all firewall rules for a given host object  
-get-hostIpsRules.ps1: get all ips rules assigned to a policy for each host object in the dsm  
-get-hostRecoAndAssignedRules.ps1: get count of assigned and recommended rules for each host object in the dsm  
-get-macFromInterfaces.ps1: get all interfaces and their mac addresses for a given host object  
-get-managedHostCounts.ps1: get a simple count of all Unmanaged vs not Unmanaged hosts in the dsm  
-rest-authenticationLogin.ps1: rest call to get a Security ID token for subsequent calls. SID returned may be used for SOAP or REST calls  
-rest-managerInfoComponents.ps1: rest call to get list of current components available in the DSM  
-setup-dsSoap.ps1: setup script to leave the caller with a current token in $SID and ManagerService instance in $DSM for use in interactive shell. Also starting authenticaiton for new scripts  
+## Manager Tools
 
+### Bash
 
-## agent tools
--awsAgentInstallSamples  
-UserData and CfnInit snippets for use in integrating Deep Security Agent deployment in AWS automation tooling  
+<dl>
+<dt>config-dsRelay.sh</dt>
+<dd>Query the status of, enable, or disable relay functionality on an agent</dd>
+<dt>config-rehomeAwsDsManager.sh</dt>
+<dd>Used by our cloud formation projects to ensure the correct cloud connector sync'd object is activated</dd>
+<dt>create-iamCloudAccount.sh</dt>
+<dd>Create an IAM user and associated keys, then use those keys to create the DS cloud connector</dd>
+<dt>rest-cloudAccountsCreateAws.sh</dt>
+<dd>Create cloud accounts for all regions</dd>
+<dt>rest-cloudAccountsCreateAws.sh</dt>
+<dd>Create cloud account for GovCloud</dd>
+<dt>rest-tenantsCreate.sh</dt>
+<dd>Create new tenant</dd>
+</dl>
 
--bash  
-get-dsaPolicy.sh: query the local DSA for its current policyid and policyname  
-install-dsa.sh: working project 'one script to rule them all'; single bash script to download, install, and activate a deep security agent on any linux distro, arch, and version  
+### Powershell  
+
+<dl>
+<dt>config-dsRelay.ps1</dt>
+<dd>Query the status of, enable, or disable relay functionality on an agent</dd>
+<dt>config-ipsXforwardedForRule.ps1</dt>
+<dd>Create or update an IPS rule which a list of IPS to be blocked based on header added by an AWS ELB</dd>
+<dt>config-plicy-agentcomm.ps1</dt>
+<dd>Configure manager agent communication direction on a policy</dd>
+<dt>get-allHostsSummary.ps1</dt>
+<dd>Get summary of all host objects in deep security manager similar to dashboard status widget</dd>
+<dt>get-amComponentVersions.ps1</dt>
+<dd>Get detailed agent and am engine versions for a host object</dd>
+<dt>get-computerCreatedEvents.ps1</dt>
+<dd>Get all computer created system events for a given time frame</dd>
+<dt>get-firewallrules.ps1</dt>
+<dd>Get all firewall rules for a given host object</dd>
+<dt>get-hostIpsRules.ps1</dt>
+<dd>Get all ips rules assigned to a policy for each host object in the DSM</dd>
+<dt>get-hostRecoAndAssignedRules.ps1</dt>
+<dd>Get count of assigned and recommended rules for each host object in the DSM</dd>
+<dt>get-macFromInterfaces.ps1</dt>
+<dd>Get all interfaces and their mac addresses for a given host object</dd>
+<dt>get-managedHostCounts.ps1</dt>
+<dd>Get a simple count of all Unmanaged vs not Unmanaged hosts in the DSM</dd>
+<dt>rest-authenticationLogin.ps1</dt>
+<dd>Rest call to get a Security ID token for subsequent calls. SID returned may be used for SOAP or REST calls</dd>
+<dt>rest-managerInfoComponents.ps1</dt>
+<dd>Rest call to get list of current components available in the DSM</dd>
+<dt>setup-dsSoap.ps1</dt>
+<dd>Setup script to leave the caller with a current token in $SID and ManagerService instance in $DSM for use in interactive shell. Also starting authenticaiton for new scripts</dd>
+</dl>  
+
+## Agent tools
+
+<dl>
+<dt>awsAgentInstallSamples</dt>
+<dd>UserData and CfnInit snippets for use in integrating Deep Security Agent deployment in AWS automation tooling</dd>
+</dl>
+
+### Bash  
+
+<dl>
+<dt>get-dsaPolicy.sh</dt>
+<dd>Query the local DSA for its current policyid and policyname</dd>
+<dt>install-dsa.sh</dt>
+<dd>Working project 'one script to rule them all'; single bash script to download, install, and activate a deep security agent on any linux distro, arch, and version</dd>
+</dl>
 
 
