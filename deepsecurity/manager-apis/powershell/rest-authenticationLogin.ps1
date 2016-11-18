@@ -1,5 +1,4 @@
-﻿
-param (
+﻿param (
     [Parameter(Mandatory=$true)][string]$manager,
     [Parameter(Mandatory=$true)][string]$user,
     [Parameter(Mandatory=$false)][string]$tenant
@@ -19,19 +18,21 @@ $authUri
 $headers=@{'Content-Type'='application/json'}
 
 try {
-    if (!$tenant) {
-        $authUri = $managerUri + "authentication/login/primary"
-        }
-    else {
-        $authUri = $managerUri + "authentication/login"
-        }
-
     $data = @{
         dsCredentials = @{
             password=$password
             userName=$user
             }
     }
+    if (!$tenant) {
+        $authUri = $managerUri + "authentication/login/primary"
+        }
+    else {
+        $authUri = $managerUri + "authentication/login"
+        $data.dsCredentials.Add("tenantName", $tenant)
+        }
+
+    
     $requestbody = $data | ConvertTo-Json    
     $requestbody
     $Global:SID=Invoke-RestMethod -Headers $headers -Method POST -Uri $authUri -Body $requestbody
