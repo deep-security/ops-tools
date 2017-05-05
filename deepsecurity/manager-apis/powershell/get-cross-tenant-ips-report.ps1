@@ -51,6 +51,7 @@ function evaluate-rules
                 $csvline | Add-Member -MemberType NoteProperty -Name RecommendedRulesInPrevent -Value "N/A"
                 $csvline | Add-Member -MemberType NoteProperty -Name DetectRulesTriggered -Value "N/A"
                 $csvline | Add-Member -MemberType NoteProperty -Name PreventRulesTriggered -Value "N/A"
+                $csvline | Add-Member -MemberType NoteProperty -Name LastRecommendationScan -Value "N/A"
                 $csvline | export-csv $filename -Append -NoTypeInformation
                 continue
             }
@@ -67,6 +68,11 @@ function evaluate-rules
             if ($rule.detectOnly -eq $true) {$RecommendedAllDetectCount++}
         }
         
+        $hft = new-object DSSOAP.HostFilterTransport
+        $hft.type = [DSSOAP.EnumHostFilterType]::SPECIFIC_HOST
+        $hft.hostID = $ht.id
+        $hdt = $DSM.hostDetailRetrieve($hft, [DSSOAP.EnumHostDetailLevel]::LOW, $token)
+
         $detections = get-events $token $ht.id
         $csvline = New-Object PSObject;
         $csvline | Add-Member -MemberType NoteProperty -Name TenantName -Value $tenantname
@@ -82,6 +88,7 @@ function evaluate-rules
         $csvline | Add-Member -MemberType NoteProperty -Name RecommendedRulesInPrevent -Value ($recommendedAll.Count - $recommendedDetectCount)
         $csvline | Add-Member -MemberType NoteProperty -Name DetectRulesTriggered -Value $detections[0]
         $csvline | Add-Member -MemberType NoteProperty -Name PreventRulesTriggered -Value $detections[1]
+        $csvline | Add-Member -MemberType NoteProperty -Name LastRecommendationScan -Value $hdt.overallLastRecommendationScan
         $csvline | export-csv $filename -Append -NoTypeInformation
     }
 }
