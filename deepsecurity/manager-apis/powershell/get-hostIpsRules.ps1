@@ -27,9 +27,9 @@ catch {
 
 $timestamp = Get-Date -Format yyyyMMddhhmmss
 
-$ht = $DSM.hostRetrieveAll($SID);
+$hts = $DSM.hostRetrieveAll($SID);
 
-foreach ($ht in $hosts)
+foreach ($ht in $hts)
     {
 
         $hostdetail = $DSM.hostDetailRetrieveByName($ht.name, [DSSOAP.EnumHostDetailLevel]::HIGH, $SID);
@@ -54,7 +54,6 @@ foreach ($ht in $hosts)
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleId -Value $rule.identifier;
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleCveNumbers -Value $rule.cvenumbers;
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleDescription -Value $rule.description;
-                
                 $csvline | export-csv $filename -Append
             }
 
