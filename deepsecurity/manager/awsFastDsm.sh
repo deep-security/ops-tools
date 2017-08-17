@@ -81,7 +81,7 @@ echo "$(date) -- manager install complete"
 # customize dsm
 yum -y install perl-XML-Twig
 echo "$(date) -- starting manager customization"
-curl -O https://s3.amazonaws.com/trend-micro-quick-start/v5.1/Common/Scripts/set-aia-settings
+curl -O https://s3.amazonaws.com/trend-micro-quick-start/v5.1/Common/Scripts/set-aia-settings.sh
 chmod 755 set-aiaSettings
 curl -O https://s3.amazonaws.com/trend-micro-quick-start/v3.7/Common/Scripts/set-lb-settings
 chmod 755 set-lbSettings
