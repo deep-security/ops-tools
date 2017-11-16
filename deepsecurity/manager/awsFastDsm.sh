@@ -29,8 +29,8 @@ echo "$(date) -- starting docker Install"
 yum -y install docker-engine
 service docker start
 echo "$(date) -- creating pgsql container for dsmdb"
-docker pull postgres
-docker run --name dsmpgsqldb -p 5432:5432 -e "POSTGRES_PASSWORD=${dbpw}"  -e POSTGRES_DB=dsm -d postgres
+docker pull postgres:9
+docker run --name dsmpgsqldb -p 5432:5432 -e "POSTGRES_PASSWORD=${dbpw}"  -e POSTGRES_DB=dsm -d postgres:9
 echo "$(date) -- creating database in sql instance"
 
 # persist db across restart
