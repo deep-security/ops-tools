@@ -2,7 +2,7 @@
 dbpw='Password123!'
 dsmuser=MasterAdmin
 dsmpw='Password123!'
-managerInstaller='https://s3.amazonaws.com/424d57/fastDsm/Manager-Linux-10.1.406.x64.sh'
+managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/10.3/Manager-Linux-10.3.102.x64.sh'
 
 # setup dir
 mkdir -p /opt/fastdsm/
@@ -26,6 +26,8 @@ EOF
 echo "$(date) -- starting docker Install"
 
 # get a db
+echo "$(date) -- RHEL7 on EC2 is occasionally slow to get enough network to find mirrors. Let it catch up"
+sleep 30
 yum -y install docker-engine
 service docker start
 echo "$(date) -- creating pgsql container for dsmdb"
@@ -82,8 +84,8 @@ echo "$(date) -- manager install complete"
 yum -y install perl-XML-Twig
 echo "$(date) -- starting manager customization"
 curl -O https://s3.amazonaws.com/trend-micro-quick-start/v5.1/Common/Scripts/set-aia-settings.sh
-chmod 755 set-aiaSettings
-curl -O https://s3.amazonaws.com/trend-micro-quick-start/v3.7/Common/Scripts/set-lb-settings
+chmod 755 set-aiaSettings.sh
+curl -O https://s3.amazonaws.com/trend-micro-quick-start/v3.7/Common/Scripts/set-lbSettings
 chmod 755 set-lbSettings
 curl -O https://raw.githubusercontent.com/deep-security/ops-tools/master/deepsecurity/manager-apis/bash/ds10-rest-cloudAccountCreateWithInstanceRole.sh
 chmod 755 ds10-rest-cloudAccountCreateWithInstanceRole.sh
