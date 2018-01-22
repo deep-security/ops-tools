@@ -96,10 +96,10 @@ chmod 755 /etc/systemd/system/dsm_s.service
 echo "$(date) -- waiting for manager startup to complete"
 until curl -vk https://127.0.0.1:443/rest/status/manager/current/ping; do echo \"manager not started yet\" >> /tmp/4-check-service; service dsm_s start >> /tmp/4-check-service; sleep 30; done
 echo "$(date) -- manager startup complete. continuing with API call customizations"
-./set-aia-settings ${dsmuser} ${dsmpw} localhost 443
+./set-aia-settings.sh ${dsmuser} ${dsmpw} localhost 443
 name=$(curl http://169.254.169.254/latest/meta-data/public-hostname)
 if [ -z ${name} ]; then name=$(curl http://169.254.169.254/latest/meta-data/public-ipv4); fi
-./set-lb-settings ${dsmuser} ${dsmpw} ${name} 443 4120
+./set-lbSettings ${dsmuser} ${dsmpw} ${name} 443 4120
 ./ds10-rest-cloudAccountCreateWithInstanceRole.sh ${dsmuser} ${dsmpw} localhost 443
 
 
