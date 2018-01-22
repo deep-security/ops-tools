@@ -84,7 +84,7 @@ echo "$(date) -- manager install complete"
 yum -y install perl-XML-Twig
 echo "$(date) -- starting manager customization"
 curl -O https://s3.amazonaws.com/trend-micro-quick-start/v5.1/Common/Scripts/set-aia-settings.sh
-chmod 755 set-aiaSettings.sh
+chmod 755 set-aia-settings.sh
 curl -O https://s3.amazonaws.com/trend-micro-quick-start/v3.7/Common/Scripts/set-lbSettings
 chmod 755 set-lbSettings
 curl -O https://raw.githubusercontent.com/deep-security/ops-tools/master/deepsecurity/manager-apis/bash/ds10-rest-cloudAccountCreateWithInstanceRole.sh
