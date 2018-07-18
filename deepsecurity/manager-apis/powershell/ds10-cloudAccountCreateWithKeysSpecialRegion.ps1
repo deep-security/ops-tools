@@ -13,7 +13,7 @@ $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropS
 
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
-
+[Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
 
 $managerUri="https://$manager/"
 

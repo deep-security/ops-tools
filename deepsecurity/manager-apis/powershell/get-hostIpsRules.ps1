@@ -9,9 +9,9 @@ $passwordinput = Read-host "Password for Deep Security Manager" -AsSecureString
 $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordinput))
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
+[Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
 $Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
 $Global:DSM = New-Object DSSOAP.ManagerService
-$Global:SID
 try {
     if (!$tenant) {
         $Global:SID = $DSM.authenticate($user, $password)
@@ -29,6 +29,7 @@ $timestamp = Get-Date -Format yyyyMMddhhmmss
 $filename = "ipsrules$($timestamp).csv"
 
 $hts = $DSM.hostRetrieveAll($SID);
+$csvline = New-Object PSObject;
 
 foreach ($ht in $hts)
     {
@@ -36,17 +37,18 @@ foreach ($ht in $hts)
         $hft.type = [DSSOAP.EnumHostFilterType]::SPECIFIC_HOST
         $hft.hostID = $ht.ID
         $hostdetail = $DSM.hostDetailRetrieve($hft, [DSSOAP.EnumHostDetailLevel]::HIGH, $SID);
-        if ($hostdetail.overallDpiStatus -like '*OFF*' -Or $hostdetail.overallDpiStatus -like 'Not Activated')
+        if ($hostdetail.overallDpiStatus -like '*OFF*' -Or $hostdetail.overallDpiStatus -like '*Not Activated' -Or $hostdetail.overallDpiStatus -like 'Intrusion Prevention: ')
             {
                 continue
             };
 
-        Write-Host "Checking details for hostID: $($ht.ID)"
+        Write-Host "Checking details for hostID: $($ht.ID) with status $($hostdetail.overallDpiStatus)"
         $hostPolicy = $DSM.securityProfileRetrieve($ht.securityProfileID, $SID)
+        Write-Host "Found $($hostPolicy.DPIRuleIDs.count) ips rules"
         
         foreach ($ipsrule in $hostPolicy.DPIRuleIDs)
             {
-                $csvline = New-Object PSObject;
+                $csvline = $null
                 $rule = $DSM.DPIRuleRetrieve($ipsrule, $SID);
                 $csvline | Add-Member -MemberType NoteProperty -Name DisplayName -Value $ht.DisplayName;  
                 $csvline | Add-Member -MemberType NoteProperty -Name HostName -Value $ht.name;  
@@ -54,7 +56,7 @@ foreach ($ht in $hts)
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleId -Value $rule.identifier;
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleCveNumbers -Value $rule.cvenumbers;
                 $csvline | Add-Member -MemberType NoteProperty -Name DpiRuleDescription -Value $rule.description;
-                $csvline | export-csv $filename -Append
+                $csvline | export-csv $filename -Append -NoTypeInformation -NoClobber
             }
 
     }

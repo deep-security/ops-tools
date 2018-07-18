@@ -9,6 +9,7 @@ $passwordinput = Read-host "Password for Deep Security Manager" -AsSecureString
 $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($passwordinput))
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
+[Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
 $Global:DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
 $Global:DSM = New-Object DSSOAP.ManagerService
 $Global:SID

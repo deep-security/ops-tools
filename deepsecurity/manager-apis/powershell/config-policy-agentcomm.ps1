@@ -20,6 +20,7 @@ switch ($commdirection)
 
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
+[Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
 $DSMSoapService = New-WebServiceProxy -uri "https://$manager/webservice/Manager?WSDL" -Namespace "DSSOAP" -ErrorAction Stop
 $DSM = New-Object DSSOAP.ManagerService
 $SID

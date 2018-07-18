@@ -9,7 +9,7 @@ $password = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropS
 
 
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback={$true}
-
+[Net.ServicePointManager]::SecurityProtocol += [Net.SecurityProtocolType]::Tls12
 
 $managerUri="https://$manager/rest/"
 $Global:SID
@@ -34,7 +34,7 @@ try {
 
     
     $requestbody = $data | ConvertTo-Json    
-    $requestbody
+
     $Global:SID=Invoke-RestMethod -Headers $headers -Method POST -Uri $authUri -Body $requestbody
 }
 catch {
