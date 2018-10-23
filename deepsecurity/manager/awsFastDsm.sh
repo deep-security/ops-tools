@@ -2,7 +2,7 @@
 dbpw='Password123!'
 dsmuser=MasterAdmin
 dsmpw='Password123!'
-managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/10.3/Manager-Linux-10.3.102.x64.sh'
+managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/11.2/Manager-Linux-11.2.225.x64.sh'
 
 # setup dir
 mkdir -p /opt/fastdsm/
@@ -46,11 +46,11 @@ chkconfig docker-dsmdb on
 # get ds files
 echo "$(date) -- downloading manager and agent installers"
 curl ${managerInstaller} -o Manager-Linux.sh
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/10.0/Agent-amzn1-10.0.0-2094.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/10.0/KernelSupport-amzn1-10.0.0-2111.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/10.0/Agent-RedHat_EL7-10.0.0-2094.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/10.0/KernelSupport-RedHat_EL7-10.0.0-2105.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/10.0/Agent-Windows-10.0.0-2094.x86_64.zip"
+curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-amzn1-11.2.0-147.x86_64.zip"
+curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-amzn1-11.2.0-173.x86_64.zip"
+curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-RedHat_EL7-11.2.0-147.x86_64.zip"
+curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-RedHat_EL7-11.2.0-171.x86_64.zip"
+curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-Windows-11.2.0-148.x86_64.zip"
 
 # make a properties file
 echo "$(date) -- creating dsm properties file"
