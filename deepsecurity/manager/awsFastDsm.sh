@@ -52,6 +52,14 @@ curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-RedHat
 curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-RedHat_EL7-11.2.0-171.x86_64.zip"
 curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-Windows-11.2.0-148.x86_64.zip"
 
+# clear existing properties if they exist
+if [ -f dsm.props ]; then
+  echo "existing properties file found. moving it to dsm.props.bak"
+  mv dsm.props dsm.props.bak
+else
+  echo "no existing properties file found"
+fi
+
 # make a properties file
 echo "$(date) -- creating dsm properties file"
 echo "AddressAndPortsScreen.ManagerPort=443" >> dsm.props
