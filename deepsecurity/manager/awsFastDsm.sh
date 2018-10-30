@@ -1,7 +1,7 @@
 #!/bin/bash
-dbpw='Password123!'
+dbpw=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 dsmuser=MasterAdmin
-dsmpw='Password123!'
+dsmpw=$(curl http://169.254.169.254/latest/meta-data/instance-id)
 managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/11.2/Manager-Linux-11.2.225.x64.sh'
 
 # setup dir
