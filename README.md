@@ -54,6 +54,13 @@ A set of handy tools to make it easier to run to Deep Security.
 <dd>Setup script to leave the caller with a current token in $SID and ManagerService instance in $DSM for use in interactive shell. Also starting authenticaiton for new scripts</dd>
 </dl>  
 
+### Scheduled Task Scripts
+
+<dl>
+<dt>EnableStrongCiphers.script</dt>
+<dd>Allows Deep Security to communicate exclusively with strong ciphers</dd>
+</dl>
+
 ## Agent tools
 
 <dl>
@@ -69,5 +76,3 @@ A set of handy tools to make it easier to run to Deep Security.
 <dt>install-dsa.sh</dt>
 <dd>Working project 'one script to rule them all'; single bash script to download, install, and activate a deep security agent on any linux distro, arch, and version</dd>
 </dl>
-
-
