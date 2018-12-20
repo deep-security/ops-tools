@@ -35,7 +35,7 @@ import com.thirdbrigade.persistence1.Criteria;
 import com.thirdbrigade.persistence1.PersistentPeer;
 import com.thirdbrigade.persistence1.Values;
 import com.thirdbrigade.persistence1.Where;
-import com.trendmicro.ds.utils.io.XMLWriter;
+import com.thirdbrigade.persistence1.xml.XMLWriter;
 import com.trendmicro.ds.platform.objects.mt.Context;
 import com.trendmicro.ds.platform.objects.mt.SystemContext;
 import com.trendmicro.ds.platform.objects.mt.TNConnection;
