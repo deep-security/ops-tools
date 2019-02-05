@@ -1,0 +1,201 @@
+// Copyright(C) 2019 Trend Micro Inc. All Rights Reserved.
+//
+// Alters the configuration.properties file to add strong ciphers as well as
+// disabling TLSv1 and TLSv1.1 for dsm communication and forces the relay to
+// communicate exclusively over TLS1.2 as well. To get desired effects must be
+// run with 12.0+ on your Deep Security Manager, Deep Security Relay and
+// Deep Security Agent.
+
+package src.main.java.com.trendmicro.ds.fixes;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.lang.Process;
+import java.util.Hashtable;
+import java.util.Properties;
+import com.thirdbrigade.manager.core.db.SystemEvent;
+import com.thirdbrigade.manager.core.db.SystemEventPeer;
+import com.thirdbrigade.manager.core.db.SystemSetting;
+import com.thirdbrigade.manager.core.db.SystemSettingPeer;
+import com.thirdbrigade.manager.core.db.settings.ISettingInfo;
+import com.thirdbrigade.manager.core.db.settings.ISystemSettingInfo;
+import com.thirdbrigade.manager.core.db.settings.Settings;
+import com.thirdbrigade.manager.core.ManagerGlobals;
+import com.thirdbrigade.manager.core.Tenants;
+import com.thirdbrigade.persistence1.Criteria;
+import com.thirdbrigade.persistence1.PersistentPeer;
+import com.thirdbrigade.persistence1.Values;
+import com.thirdbrigade.persistence1.Where;
+import com.trendmicro.ds.platform.objects.mt.Context;
+import com.trendmicro.ds.platform.objects.mt.SystemContext;
+import com.trendmicro.ds.platform.objects.mt.TNConnection;
+import com.trendmicro.ds.utils.io.XMLWriter;
+
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public static final Log log = LogFactory.getLog("EnableStrongCiphers");
+public static final String cipherSuites = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, " +
+    "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256";
+public static final String disabledProtocols = ", TLSv1, TLSv1.1";
+public static final String allowedProtocols = "TLSv1.2";
+public static boolean isDS10 = false;
+
+
+String jreFile;
+String confFile;
+String jreDir;
+String versionCommand;
+String version;
+String [] versionPts;
+String os = System.getProperty("os.name");
+String currentWorkingDirectory = System.getProperty("user.dir");
+
+log.info("Start script");
+log.info("Current Operating System: " + os);
+log.info("Current Working directory: " + currentWorkingDirectory);
+
+if (os.contains("Windows")) {
+	    jreDir = "jre\\lib\\security\\";
+	    versionCommand = "dsm_version";
+	} else {
+	    jreDir = "jre/lib/security/";
+	    versionCommand = "./dsm_version";
+}
+
+confFile = "configuration.properties";
+jreFile = jreDir + "java.security";
+
+try {
+	Process proc = Runtime.getRuntime().exec(versionCommand);
+	BufferedReader stdIn = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+	version = stdIn.readLine();
+	log.info("DSM version number: " + version);
+	versionPts = version.split("\\.");
+
+	//Support for TLS was added in 10.0U8 so we need to check that the dsm version is greater then or equal to that
+	if(!versionPts[0].equals("12")) {
+		throw new Exception("You must have 12 or higher in order to run this script");
+	} else if(ManagerGlobals.isFIPSMode()){
+		throw new Exception("You must disable FIPS mode before enabling strong ciphers");
+	}
+
+	//Adding the preferred cipher suites to configuration.properties
+	Properties configuration = new Properties();
+	InputStream input;
+	OutputStream output;
+
+	try {
+	    input = new java.io.FileInputStream(confFile);
+	    configuration.load(input);
+	} catch (Exception e) {
+	    log.error("Failed reading from configurations.properties: " + e);
+	} finally {
+	    if (input != null) {
+	        input.close();
+	    }
+	}
+
+	try {
+	    configuration.setProperty("ciphers", cipherSuites);
+	    configuration.setProperty("protocols", allowedProtocols);
+	    output = new FileOutputStream(confFile);
+	    configuration.store(output, null);
+	} catch (Exception e) {
+	    log.error("Failed writing to configurations.properties: " + e);
+	} finally {
+	    if (output != null) {
+	        output.close();
+	    }
+	}
+
+	//Disable old TLS protocols
+	configuration = new java.util.Properties();
+	String currentValue;
+
+	try {
+	    input = new FileInputStream(jreFile);
+
+	    configuration.load(input);
+	    currentValue = configuration.getProperty("jdk.tls.disabledAlgorithms");
+	} catch (Exception e) {
+	    log.error("Failed reading from jre: " + e);
+	} finally {
+	    if (input != null) {
+	        input.close();
+	    }
+	}
+
+	if (!currentValue.contains(disabledProtocols)) {
+		try {
+		    configuration.setProperty("jdk.tls.disabledAlgorithms", currentValue + disabledProtocols);
+		    output = new FileOutputStream(jreFile);
+		    configuration.store(output, null);
+		} catch (Exception e) {
+		    log.error("Failed writing to jre: " + e);
+		} finally {
+		    if (output != null) {
+		        output.close();
+		    }
+		}
+	}
+
+	try {
+		SystemContext context = Tenants.getT0SystemContext();
+		if(context == null){
+			throw new Exception("No context received");
+		}
+	} catch (Exception e){
+		log.error("Do not have the permission to alter system variables: " + e);
+	}
+
+	//Changing the minimum TLS protocol to communicate with the relay to TLSv1.2
+	Class targetType = null;
+	Long targetID = null;
+	String targetName = null;
+
+	TNConnection connection = null;
+	try {
+		connection = context.beginConnection();
+
+		XMLWriter xmlWriter = new XMLWriter();
+		xmlWriter.writeStartElement(SystemSetting.class.getSimpleName() + "s");
+		Hashtable map = SystemSetting.getSettingInfoMap();
+
+		String value = "TLSv1.2";
+		ISettingInfo info = map.get("settings.configuration.restrictRelayMinimumTLSProtocol");
+		Settings.saveSystemSetting((ISystemSettingInfo) info, value, xmlWriter, connection);
+
+		if(!isDS10){
+			info = map.get("settings.configuration.MinimumTLSProtocolNewNode");
+			Settings.saveSystemSetting((ISystemSettingInfo) info, value, xmlWriter, connection);
+		}
+
+		value = "true";
+		info = map.get("settings.configuration.enableStrongCiphers");
+		Settings.saveSystemSetting((ISystemSettingInfo) info, value, xmlWriter, connection);
+
+		xmlWriter.writeEndElement();
+
+		SystemEventPeer.saveEvent(targetType, targetID, targetName, SystemEvent.Type.SYSTEM_SETTINGS_SAVED, xmlWriter.toString(), connection);
+	} catch (Exception e) {
+    log.error("Failed to change setting: " + e);
+  } finally {
+    connection.close();
+  }
+}catch(Exception e) {
+	log.error("Failed DSM version check:" + e);
+}
+
+
+log.info("Finished script");
