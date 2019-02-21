@@ -2,7 +2,14 @@
 dbpw='Password123!'
 dsmuser=MasterAdmin
 dsmpw='Password123!'
-managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/11.2/Manager-Linux-11.2.225.x64.sh'
+managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/11.3/Manager-Linux-11.3.184.x64.sh'
+
+download(){  
+  until curl -f $@ ; 
+  do
+    sleep 1
+  done
+}
 
 # setup dir
 mkdir -p /opt/fastdsm/
@@ -27,8 +34,9 @@ echo "$(date) -- starting docker Install"
 
 # get a db
 echo "$(date) -- RHEL7 on EC2 is occasionally slow to get enough network to find mirrors. Let it catch up"
-sleep 30
 yum -y install docker-engine
+while [ $? -ne 0 ]; do !!; done
+
 service docker start
 echo "$(date) -- creating pgsql container for dsmdb"
 docker pull postgres:9
@@ -37,20 +45,26 @@ echo "$(date) -- creating database in sql instance"
 
 # persist db across restart
 echo "$(date) -- creating service config to persiste db instance"
-curl https://s3.amazonaws.com/424d57/fastDsm/docker-dsmdb -o /etc/init.d/docker-dsmdb
+download https://s3.amazonaws.com/424d57/fastDsm/docker-dsmdb -o /etc/init.d/docker-dsmdb
 chmod 755 /etc/init.d/docker-dsmdb
 chkconfig --add docker-dsmdb
 chkconfig docker-dsmdb on
+chkconfig --add docker 
+chkconfig docker on
 
 
 # get ds files
 echo "$(date) -- downloading manager and agent installers"
-curl ${managerInstaller} -o Manager-Linux.sh
-curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-amzn1-11.2.0-147.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-amzn1-11.2.0-173.x86_64.zip"
-curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-RedHat_EL7-11.2.0-147.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-RedHat_EL7-11.2.0-171.x86_64.zip"
-curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-Windows-11.2.0-148.x86_64.zip"
+download ${managerInstaller} -o Manager-Linux.sh
+download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-amzn1-11.3.0-168.x86_64.zip"
+download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-amzn1-11.3.0-221.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-amzn2-11.3.0-168.x86_64.zip"
+download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-amzn2-11.3.0-225.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-RedHat_EL7-11.3.0-168.x86_64.zip"
+download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-RedHat_EL7-11.3.0-226.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-Ubuntu_18.04-11.3.0-168.x86_64.zip"
+download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-Ubuntu_18.04-11.3.0-224.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-Windows-11.3.0-202.x86_64.zip"
 
 # make a properties file
 echo "$(date) -- creating dsm properties file"
@@ -79,6 +93,7 @@ echo "$(date) -- installing manager"
 chmod 755 Manager-Linux.sh
 ./Manager-Linux.sh -q -console -varfile dsm.props
 echo "$(date) -- manager install complete"
+chkconfig dsm_s on
 
 # customize dsm
 yum -y install perl-XML-Twig
