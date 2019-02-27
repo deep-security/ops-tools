@@ -159,7 +159,7 @@ def WriteCSV(pagedcomputers, groups):
                 try:
                     account = _getAmazonAccount(restComputer.group_id,groups, _awsAccounts, _accountPattern)
                     statusMessage = "{0}".format(restComputer.computer_status.agent_status_messages)
-                    statusMessage.replace(","," ")
+                    statusMessage = statusMessage.replace(","," ")
                     if restComputer.ec2_virtual_machine_summary:
                         instanceid = restComputer.ec2_virtual_machine_summary.instance_id
                         if instanceid is None:
