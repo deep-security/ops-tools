@@ -4,11 +4,12 @@ import codecs
 import re
 import time
 import pickle
+import os
 
 #DSM Host & port (must end in /api)
 HOST='https://app.deepsecurity.trendmicro.com:443/api'
-#API Key from the DSM
-API_KEY='<You API KEY>'
+#API Key from the DSM defined in an environment varaible called "API_KEY"
+API_KEY=os.environ.get('API_KEY', None)
 # Output file
 FILENAME = 'report.csv'
 # API Version
@@ -181,6 +182,8 @@ def WriteCSV(pagedcomputers, groups):
 
 
 if __name__ == '__main__':
+    if not API_KEY:
+        raise ValueError('You must have "API_KEY" variable')
     # Add Deep Security Manager host information to the api client configuration
     configuration = api.Configuration()
     configuration.host = HOST
