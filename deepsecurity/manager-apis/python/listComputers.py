@@ -5,6 +5,7 @@ import re
 import time
 import pickle
 import os
+import datetime
 
 #DSM Host & port (must end in /api)
 HOST='https://app.deepsecurity.trendmicro.com:443/api'
@@ -50,6 +51,7 @@ def GetAllGroups(configuration):
             if num_found != page_size:
                 print ("Num_found {0} - Page size is {1}".format(num_found, page_size))
 
+
     except api_exception as e:
         return "Exception: " + str(e)
 
@@ -93,6 +95,7 @@ def GetAllComputers(configuration):
             search_criteria.id_value = last_id
             print("Last ID: " + str(last_id), "Computers found: " + str(num_found))
             print ("Return rate: {0} hosts/sec".format( num_found / (t1-t0) ))
+
             if num_found != page_size:
                 print ("Num_found {0} - Page size is {1}".format(num_found, page_size))
 
@@ -147,6 +150,11 @@ def _getAmazonAccount(groupid, groups, _awsAccounts, _accountPattern):
 
     return '0'
 
+def _convertTimeStamp(serverTime):
+    if serverTime:
+        t =  datetime.datetime.fromtimestamp(serverTime / 1000).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        return t
+    return " "
 
 def WriteCSV(pagedcomputers, groups):
     _awsAccounts = {}
@@ -154,7 +162,7 @@ def WriteCSV(pagedcomputers, groups):
 
     with codecs.open(FILENAME, "w", "utf-8") as outfile:
         outfile.write(
-            "AWS Instance Id,Computer Status,Status,amazon_account_id,displayName,host_name\n")
+            "AWS Instance Id,Computer Status,Status,amazon_account_id,displayName,host_name, Agent Version, Last Agent Communication\n")
         for computers in pagedcomputers:
             for restComputer in computers:
                 try:
@@ -168,13 +176,15 @@ def WriteCSV(pagedcomputers, groups):
                     else:
                         instanceid = "None"
 
-                    outfile.write("{0},{1},{2},{3},{4},{5}\n".format(
+                    outfile.write("{0},{1},{2},{3},{4},{5}, {6}, {7}\n".format(
                             instanceid,
                             ConvertToHostLight(restComputer.computer_status.agent_status),
                             statusMessage,
                             account,
                             restComputer.display_name,
-                            restComputer.host_name
+                            restComputer.host_name,
+                            restComputer.agent_version,
+                            _convertTimeStamp(restComputer.last_agent_communication)
                         ))
                 except Exception as err:
                     print (err)

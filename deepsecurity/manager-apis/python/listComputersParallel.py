@@ -8,6 +8,7 @@ import re
 import time
 import pickle
 import os
+import datetime
 
 # DSM Host & port (must end in /api)
 HOST = 'https://app.deepsecurity.trendmicro.com:443/api'
@@ -225,37 +226,46 @@ def _getAmazonAccount(groupid, groups, _awsAccounts, _accountPattern):
     return '0'
 
 
+def _convertTimeStamp(serverTime):
+    if serverTime:
+        t =  datetime.datetime.fromtimestamp(serverTime / 1000).strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+        return t
+    return " "
+
 def WriteCSV(pagedcomputers, groups):
     _awsAccounts = {}
     _accountPattern = re.compile("[0-9]{6,25}")
 
     with codecs.open(FILENAME, "w", "utf-8") as outfile:
         outfile.write(
-            "AWS Instance Id,Computer Status,Status,amazon_account_id,displayName,host_name\n")
+            "AWS Instance Id,Computer Status,Status,amazon_account_id,displayName,host_name, Agent Version, Last Agent Communication\n")
         for computers in pagedcomputers:
             for restComputer in computers:
                 try:
-                    account = _getAmazonAccount(restComputer.group_id, groups, _awsAccounts, _accountPattern)
+                    account = _getAmazonAccount(restComputer.group_id,groups, _awsAccounts, _accountPattern)
                     statusMessage = "{0}".format(restComputer.computer_status.agent_status_messages)
-                    statusMessage = statusMessage.replace(",", " ")
+                    statusMessage = statusMessage.replace(","," ")
                     if restComputer.ec2_virtual_machine_summary:
                         instanceid = restComputer.ec2_virtual_machine_summary.instance_id
                         if instanceid is None:
-                            instanceid = "None"
+                             instanceid = "None"
                     else:
                         instanceid = "None"
 
-                    outfile.write("{0},{1},{2},{3},{4},{5}\n".format(
-                        instanceid,
-                        ConvertToHostLight(restComputer.computer_status.agent_status),
-                        statusMessage,
-                        account,
-                        restComputer.display_name,
-                        restComputer.host_name
-                    ))
+                    outfile.write("{0},{1},{2},{3},{4},{5}, {6}, {7}\n".format(
+                            instanceid,
+                            ConvertToHostLight(restComputer.computer_status.agent_status),
+                            statusMessage,
+                            account,
+                            restComputer.display_name,
+                            restComputer.host_name,
+                            restComputer.agent_version,
+                            _convertTimeStamp(restComputer.last_agent_communication)
+                        ))
                 except Exception as err:
                     print (err)
     return
+
 
 
 if __name__ == '__main__':
