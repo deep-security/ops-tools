@@ -24,10 +24,13 @@ class DeepSecurityComputers:
 
     def __init__(self, config):
         self._lock = Lock()
+        self._threadDataLock = Lock()
+        self._threadsGroups = []
         self._threadCount = 12
         self._Groups = None
         self._Computers = []
         self._config = config
+
 
 
     def GetAllGroups(self, configuration):
@@ -130,8 +133,21 @@ class DeepSecurityComputers:
         self._lock.release()
 
     def _computers_tread_array(self, configuration, groups):
-        for groupID in groups:
-            self._computers_tread(configuration=configuration, groupID=groupID)
+        computerGroup = {}
+        while True:
+            self._threadDataLock.acquire()
+            if self._threadsGroups:
+                computerGroup = self._threadsGroups.pop()
+                self._threadDataLock.release()
+            else:
+                self._threadDataLock.release()
+                return
+
+            if computerGroup:
+                    self._computers_tread(configuration=configuration, groupID=computerGroup.id)
+            else:
+                return
+
         return
 
     def GetAllComputers(self):
@@ -141,20 +157,8 @@ class DeepSecurityComputers:
     def _GetAllComputers(self, configuration, groups):
         threads = []
         thread_data = {}
-        allGroups = copy.copy(groups)
-        for i in range(self._threadCount):
-            thread_data[i] = []
-        i = 0
-        # Why do all this and not array slice? Because we are attempting
-        # to balance the work for each thread. Many groups can be empty
-        # then hit two/three very heavy consecutive groups. If we array slice
-        # the heavy groups all are serviced by the same thread (basically
-        # making it serial). Using a round-robin method helps to balance this
-        # and if it was already balanced, round-robin would still good
-        while len(allGroups) > 0:
-            group = allGroups.pop()
-            thread_data[i % self._threadCount].append(group.id)
-            i += 1
+        self._threadsGroups = copy.copy(groups)
+
 
         t0 = time.time()
         # this starts a thread to collect all computers that do not belong to any group
@@ -163,7 +167,7 @@ class DeepSecurityComputers:
 
         # Setup each thread
         for i in range(self._threadCount):
-            threads.append(Thread(target=self._computers_tread_array, args=(configuration, thread_data[i],)))
+            threads.append(Thread(target=self._computers_tread_array, args=(configuration, None)))
         # Start each thread
         for i in range(self._threadCount):
             threads[i].start()
