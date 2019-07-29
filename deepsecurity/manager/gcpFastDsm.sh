@@ -2,7 +2,7 @@
 dbpw='Password123!'
 dsmuser=MasterAdmin
 dsmpw='Password123!'
-managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/11.3/Manager-Linux-11.3.184.x64.sh'
+managerInstaller='https://files.trendmicro.com/products/deepsecurity/en/12.0/Manager-Linux-12.0.296.x64.sh'
 
 download(){  
   until curl -f $@ ; 
@@ -60,15 +60,17 @@ chkconfig docker on
 # get ds files
 echo "$(date) -- downloading manager and agent installers"
 download ${managerInstaller} -o Manager-Linux.sh
-download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-amzn1-11.3.0-168.x86_64.zip"
-download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-amzn1-11.3.0-221.x86_64.zip"
-download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-amzn2-11.3.0-168.x86_64.zip"
-download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-amzn2-11.3.0-225.x86_64.zip"
-download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-RedHat_EL7-11.3.0-168.x86_64.zip"
-download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-RedHat_EL7-11.3.0-226.x86_64.zip"
-download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-Ubuntu_18.04-11.3.0-168.x86_64.zip"
-download -O "http://files.trendmicro.com/products/deepsecurity/en/11.3/KernelSupport-Ubuntu_18.04-11.3.0-224.x86_64.zip"
-download -O "https://files.trendmicro.com/products/deepsecurity/en/11.3/Agent-Windows-11.3.0-202.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-amzn1-12.0.0-364.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-amzn2-12.0.0-444.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-amzn2-12.0.0-364.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-amzn1-12.0.0-458.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-RedHat_EL7-12.0.0-364.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-RedHat_EL7-12.0.0-387.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-Ubuntu_18.04-12.0.0-364.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-Ubuntu_18.04-12.0.0-454.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-Windows-12.0.0-360.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-RedHat_EL8-12.0.0-364.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-RedHat_EL8-12.0.0-385.x86_64.zip"
 
 # make a properties file
 echo "$(date) -- creating dsm properties file"
@@ -95,7 +97,12 @@ echo "Override.Automation=True" >> dsm.props
 # install manager
 echo "$(date) -- installing manager"
 chmod 755 Manager-Linux.sh
-./Manager-Linux.sh -q -console -varfile dsm.props || exit -1
+./Manager-Linux.sh -q -console -varfile dsm.props 
+if [ $? -ne 0 ]; then 
+  echo "$(date) -- manager install FAILED"
+  cat /opt/fastdsm/DeepSecurityInstallerReport.csv 
+  exit -1
+fi
 echo "$(date) -- manager install complete"
 chkconfig --add dsm_s
 systemctl enable dsm_s 
