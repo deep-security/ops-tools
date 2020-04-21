@@ -1,6 +1,13 @@
-# ops-tools
+# Ops Tools for Deep Security
 
 A set of handy tools to make it easier to run to Deep Security.
+
+## Table of Contents
+
+* [Manager tools](#manager-tools)
+* [Agent tools](#agent-tools)
+* [Support](#support)
+* [Contribute](#contribute)
 
 ## Manager Tools
 
@@ -21,7 +28,7 @@ A set of handy tools to make it easier to run to Deep Security.
 <dd>Create new tenant</dd>
 </dl>
 
-### Powershell  
+### PowerShell  
 
 <dl>
 <dt>config-dsRelay.ps1</dt>
@@ -54,6 +61,13 @@ A set of handy tools to make it easier to run to Deep Security.
 <dd>Setup script to leave the caller with a current token in $SID and ManagerService instance in $DSM for use in interactive shell. Also starting authenticaiton for new scripts</dd>
 </dl>  
 
+### Scheduled Task Scripts
+
+<dl>
+<dt>EnableStrongCiphers.script</dt>
+<dd>Allows Deep Security to communicate exclusively with strong ciphers</dd>
+</dl>
+
 ## Agent tools
 
 <dl>
@@ -70,4 +84,26 @@ A set of handy tools to make it easier to run to Deep Security.
 <dd>Working project 'one script to rule them all'; single bash script to download, install, and activate a deep security agent on any linux distro, arch, and version</dd>
 </dl>
 
+## Support
 
+This is an Open Source community project. Project contributors may be able to help, 
+depending on their time and availability. Please be specific about what you're 
+trying to do, your system, and steps to reproduce the problem.
+
+For bug reports or feature requests, please 
+[open an issue](../issues). 
+You are welcome to [contribute](#contribute).
+
+Official support from Trend Micro is not available. Individual contributors may be 
+Trend Micro employees, but are not official support.
+
+## Contribute
+
+We accept contributions from the community. To submit changes:
+
+1. Fork this repository.
+1. Create a new feature branch.
+1. Make your changes.
+1. Submit a pull request with an explanation of your changes or additions.
+
+We will review and work with you to release the code.
