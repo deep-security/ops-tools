@@ -47,10 +47,12 @@ chkconfig docker-dsmdb on
 echo "$(date) -- downloading manager and agent installers"
 curl ${managerInstaller} -o Manager-Linux.sh
 curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-amzn1-11.2.0-147.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-amzn1-11.2.0-173.x86_64.zip"
+curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-amzn1-11.2.0-173.x86_64.zip"
 curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-RedHat_EL7-11.2.0-147.x86_64.zip"
-curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-RedHat_EL7-11.2.0-171.x86_64.zip"
+curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-RedHat_EL7-11.2.0-248.x86_64.zip"
 curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-Windows-11.2.0-148.x86_64.zip"
+curl -O "https://files.trendmicro.com/products/deepsecurity/en/11.2/Agent-amzn2-11.2.0-147.x86_64.zip"
+curl -O "http://files.trendmicro.com/products/deepsecurity/en/11.2/KernelSupport-amzn2-11.2.0-208.x86_64.zip"
 
 # clear existing properties if they exist
 if [ -f dsm.props ]; then
