@@ -1,18 +1,12 @@
 #!/bin/bash
 dbpw='Password123!'
+ActivationCode=$1
 dsmuser=${2}
 dsmpw=${3}
-ActivationCode=$1
-#dsmuser=MasterAdmin
-#dsmpw='Password123!'
-#managerInstaller="$downloadUrl/products/deepsecurity/en/$dsmMajorVersion/Manager-Linux-$dsmVersion.x64.sh"
 dsmMajorVersion="12.5"
 dsmMinorVersion="732"
 dsmVersion="$dsmMajorVersion.$dsmMinorVersion"
 downloadUrl="https://files.trendmicro.com"
-#If running script outside of CFT ON RHEL: uncomment the following 2 lines, and provide an Activation Code
-#ActivationCode=
-#echo ${ActivationCode} > /opt/DSActivationCode
 ​
 download(){  
   until curl -f $@ ; 
@@ -67,7 +61,6 @@ fi
 ​
 #Download proper installer per OS
 if [[ "${OS}" == *"7.6"* || "${OS}" == *"7.7"* || "${OS}" == *"7.8"* ]] ; then
-    #ActivationCode=`cat /opt/ActivationCode`
     managerInstaller="$downloadUrl/products/deepsecurity/en/$dsmMajorVersion/Manager-Linux-$dsmVersion.x64.sh"
     download ${managerInstaller} -o Manager-Linux.sh
 elif [[ "${OS}" == *"Amazon"* ]] ; then
