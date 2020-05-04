@@ -53,11 +53,6 @@ elif [[ "${OS}" == *"7.8"* ]] ; then
     yum install -y container-selinux
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     yum -y install docker-ce
-elif [[ "${OS}" == *"8."* ]] ; then
-    echo "setting up repos and installing docker for Rhel 8.X"
-    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    yum -y install containerd.io
-    yum -y install docker-ce --nobest
 elif [[ "${OS}" == *"Amazon"* ]] ; then
     echo "Installing docker for Amazon Linux 1, repos already available"
     yum -y install docker
@@ -65,7 +60,7 @@ else echo "Platform not supported for install"
 fi
 ​
 #Download proper installer per OS
-if [[ "${OS}" == *"7.6"* || "${OS}" == *"7.7"* || "${OS}" == *"7.8"* || "${OS}" == *"8."* ]] ; then
+if [[ "${OS}" == *"7.6"* || "${OS}" == *"7.7"* || "${OS}" == *"7.8"* ]] ; then
     managerInstaller="$downloadUrl/products/deepsecurity/en/$dsmMajorVersion/Manager-Linux-$dsmVersion.x64.sh"
     download ${managerInstaller} -o Manager-Linux.sh
 elif [[ "${OS}" == *"Amazon"* ]] ; then
