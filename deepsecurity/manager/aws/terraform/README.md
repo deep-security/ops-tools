@@ -16,7 +16,10 @@ environment
 external_id
 ```
 
-The **externalID** can be found within Deep Security Manager if you go to **Computers** at the top. Click **Add** -> **Add AWS Account**. A wizard will appear, select **Advanced** as the setup type and click **Next**. Then click the eye icon next to the obscured *externalID* to reveal it.
+The **externalID** can be found within Deep Security Manager:
+  1. Once logged in, go to **Computers** at the top. 
+  2. Click **Add** -> **Add AWS Account**. 
+  3. A wizard will appear, select **Advanced** and click **Next**. Then click the eye icon next to the obscured **externalID** to reveal it.
 
 **Copy the external ID to a secure place as you will need it when applying the terraform code.**
 
