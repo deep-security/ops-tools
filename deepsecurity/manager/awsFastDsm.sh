@@ -4,7 +4,7 @@ ActivationCode=$1
 dsmuser=${2}
 dsmpw=${3}
 dsmMajorVersion="12.5"
-dsmMinorVersion="732"
+dsmMinorVersion="855"
 dsmVersion="$dsmMajorVersion.$dsmMinorVersion"
 downloadUrl="https://files.trendmicro.com"
 ​
@@ -49,7 +49,7 @@ elif [[ "${OS}" == *"7.7"* ]] ; then
     yum -y install docker-ce
 elif [[ "${OS}" == *"7.8"* ]] ; then
     echo "setting up repos and installing docker for RHEL 7.8"
-    yum-config-manager --enable rhui-rhel-7-server-rhui-extras-rpms
+    yum-config-manager --enable rhel-7-server-rhui-extras-rpms
     yum install -y container-selinux
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     yum -y install docker-ce
@@ -104,6 +104,8 @@ download -O "http://files.trendmicro.com/products/deepsecurity/en/12.5/KernelSup
 download -O "https://files.trendmicro.com/products/deepsecurity/en/12.5/Agent-Windows-12.5.0-713.x86_64.zip"
 download -O "http://files.trendmicro.com/products/deepsecurity/en/12.0/KernelSupport-Ubuntu_18.04-12.0.0-522.x86_64.zip"
 download -O "https://files.trendmicro.com/products/deepsecurity/en/12.0/Agent-Ubuntu_18.04-12.0.0-481.x86_64.zip"
+download -O "https://files.trendmicro.com/products/deepsecurity/en/12.5/Agent-RedHat_EL8-12.5.0-814.x86_64.zip"
+download -O "http://files.trendmicro.com/products/deepsecurity/en/12.5/KernelSupport-RedHat_EL8-12.5.0-901.x86_64.zip"
 ​
 # make a properties file
 echo "$(date) -- creating dsm properties file"
