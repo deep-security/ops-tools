@@ -9,6 +9,8 @@ Some organizations may not want to use AWS Cloudformation to connect their AWS a
 
 ## Requirements
 
+This code will only work on **Terraform version 0.12** or **later**.
+
 There are a couple variables that are required to be entered when applying:
 
 ```
