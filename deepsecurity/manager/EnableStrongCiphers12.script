@@ -84,7 +84,7 @@ try {
 	versionPts = version.split("\\.");
 
 	//Support for TLS was added in 10.0U8 so we need to check that the dsm version is greater then or equal to that
-	if(!versionPts[0].equals("12")) {
+	if(Integer.valueOf(versionPts[0]) < 12) {
 		throw new Exception("You must have 12 or higher in order to run this script");
 	} else if(ManagerGlobals.isFIPSMode()){
 		throw new Exception("You must disable FIPS mode before enabling strong ciphers");
