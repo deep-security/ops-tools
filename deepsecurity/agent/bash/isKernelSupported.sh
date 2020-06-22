@@ -125,6 +125,8 @@ platform_detect() {
            majorVersion='6';
         elif [[ $releaseVersion =~ ^7.* ]]; then
            majorVersion='7';
+        elif [[ $releaseVersion =~ ^8.* ]]; then
+           majorVersion='8';
         fi;
         ;;
 
