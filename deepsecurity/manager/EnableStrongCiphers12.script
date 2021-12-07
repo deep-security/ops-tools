@@ -45,8 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public static final Log log = LogFactory.getLog("EnableStrongCiphers");
-public static final String cipherSuites = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256, " +
-    "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384, TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256";
+public static final String cipherSuites = "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384, TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256";
 public static final String disabledProtocols = ", TLSv1, TLSv1.1";
 public static final String allowedProtocols = "TLSv1.2";
 public static boolean isDS10 = false;
